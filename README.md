@@ -2,6 +2,8 @@
 
 A lightweight job execution service that runs shell commands asynchronously with CPU resource constraints.
 
+Users submit a command with a CPU requirement via the REST API. The service queues the job, allocates CPU capacity, and executes the command asynchronously. Users can poll for status updates as the job moves through `QUEUED → IN_PROGRESS → FINISHED / FAILED`.
+
 ## Running the Service
 
 1. Set CPU capacity in `src/main/resources/application.properties`:
@@ -12,6 +14,7 @@ A lightweight job execution service that runs shell commands asynchronously with
 ```
    ./gradlew bootRun
 ```
+The service starts on `http://localhost:8080`.
 
 ## API
 
@@ -27,11 +30,23 @@ Content-Type: application/json
 ```
 Returns `201 Created` with the job UUID.
 
+**Example:**
+```bash
+curl -X POST http://localhost:8080/executions \
+  -H "Content-Type: application/json" \
+  -d '{"command": "echo hello", "cpuCount": 1}'
+```
+
 ### Get job status
 ```
 GET /executions/{id}
 ```
 Returns `200 OK` with one of: `QUEUED`, `IN_PROGRESS`, `FINISHED`, `FAILED`.
+
+**Example:**
+```bash
+curl http://localhost:8080/executions/{id}
+```
 
 ## Design Decisions
 
