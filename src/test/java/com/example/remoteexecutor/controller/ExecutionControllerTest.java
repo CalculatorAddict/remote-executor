@@ -1,6 +1,6 @@
 package com.example.remoteexecutor.controller;
 
-import com.example.remoteexecutor.model.ExecutionStatus;
+import com.example.remoteexecutor.model.Execution;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
@@ -51,7 +51,7 @@ class ExecutionControllerTest {
     void getExecution_validId_returns200WithStatus() {
         ExecutionRequest request = new ExecutionRequest("echo hello", 1);
         UUID id = restTemplate.postForObject("/executions", request, UUID.class);
-        ResponseEntity<ExecutionStatus> response = restTemplate.getForEntity("/executions/" + id, ExecutionStatus.class);
+        ResponseEntity<Execution> response = restTemplate.getForEntity("/executions/" + id, Execution.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
@@ -60,5 +60,14 @@ class ExecutionControllerTest {
     void getExecution_unknownId_returns404() {
         ResponseEntity<String> response = restTemplate.getForEntity("/executions/" + UUID.randomUUID(), String.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void getAllExecutions_returns200() {
+        restTemplate.postForEntity("/executions", new ExecutionRequest("echo hello", 1), UUID.class);
+        restTemplate.postForEntity("/executions", new ExecutionRequest("echo hello", 1), UUID.class);
+        ResponseEntity<String> response = restTemplate.getForEntity("/executions", String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 }

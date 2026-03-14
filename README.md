@@ -8,13 +8,13 @@ Users submit a command with a CPU requirement via the REST API. The service queu
 
 1. Set CPU capacity in `src/main/resources/application.properties`:
 ```
-   executor.cpu.total=4
+executor.cpu.total=4
 ```
 2. Run the application:
 ```
-   ./gradlew bootRun
+./gradlew bootRun
 ```
-The service starts on `http://localhost:8080`.
+   The service starts on `http://localhost:8080`.
 
 ## API
 
@@ -24,8 +24,8 @@ POST /executions
 Content-Type: application/json
 
 {
-  "command": "echo hello",
-  "cpuCount": 2
+"command": "echo hello",
+"cpuCount": 2
 }
 ```
 Returns `201 Created` with the job UUID.
@@ -37,11 +37,22 @@ curl -X POST http://localhost:8080/executions \
   -d '{"command": "echo hello", "cpuCount": 1}'
 ```
 
-### Get job status
+### Get all executions
+```
+GET /executions
+```
+Returns `200 OK` with a map of all executions keyed by UUID.
+
+**Example:**
+```bash
+curl http://localhost:8080/executions
+```
+
+### Get a single execution
 ```
 GET /executions/{id}
 ```
-Returns `200 OK` with one of: `QUEUED`, `IN_PROGRESS`, `FINISHED`, `FAILED`.
+Returns `200 OK` with the full execution object including id, command, cpuCount, and status.
 
 **Example:**
 ```bash

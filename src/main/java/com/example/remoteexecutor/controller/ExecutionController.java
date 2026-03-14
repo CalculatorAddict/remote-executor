@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -24,9 +25,15 @@ public class ExecutionController {
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllExecutions() {
+        Map<UUID, Execution> allExecutions = executionService.getAllExecutions();
+        return new ResponseEntity<>(allExecutions, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getStatus(@PathVariable UUID id) {
+    public ResponseEntity<?> getExecution(@PathVariable UUID id) {
         Execution execution = executionService.getExecution(id);
-        return new ResponseEntity<>(execution.getStatus(), HttpStatus.OK);
+        return new ResponseEntity<>(execution, HttpStatus.OK);
     }
 }

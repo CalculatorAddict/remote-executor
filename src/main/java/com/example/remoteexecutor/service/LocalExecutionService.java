@@ -1,6 +1,5 @@
 package com.example.remoteexecutor.service;
 
-import com.example.remoteexecutor.controller.ExecutionRequest;
 import com.example.remoteexecutor.model.Execution;
 import com.example.remoteexecutor.model.ExecutionStatus;
 import jakarta.annotation.PreDestroy;
@@ -52,6 +51,11 @@ public class LocalExecutionService implements ExecutionService {
             throw new IllegalArgumentException("EXECUTION_NOT_FOUND");
         }
         return execution;
+    }
+
+    @Override
+    public Map<UUID, Execution> getAllExecutions() {
+        return uuidExecutionMap;
     }
 
     private synchronized void scheduleExecutions(){

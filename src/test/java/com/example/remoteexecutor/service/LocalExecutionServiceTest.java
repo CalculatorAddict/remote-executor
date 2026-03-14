@@ -1,11 +1,11 @@
 package com.example.remoteexecutor.service;
 
-import com.example.remoteexecutor.controller.ExecutionRequest;
 import com.example.remoteexecutor.model.Execution;
 import com.example.remoteexecutor.model.ExecutionStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,5 +66,15 @@ class LocalExecutionServiceTest {
         assertThrows(IllegalArgumentException.class, () -> {
            localExecutionService.getExecution(id);
         });
+    }
+
+    @Test
+    void getAllExecutions_returnsAllSubmittedJobs() {
+        UUID id1 = localExecutionService.submitExecution("sleep 5", 1);
+        UUID id2 = localExecutionService.submitExecution("sleep 5", 1);
+        Map<UUID, Execution> all = localExecutionService.getAllExecutions();
+        assertTrue(all.containsKey(id1));
+        assertTrue(all.containsKey(id2));
+        assertEquals(2, all.size());
     }
 }
