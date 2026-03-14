@@ -20,7 +20,7 @@ public class ExecutionController {
 
     @PostMapping
     public ResponseEntity<?> submit(@RequestBody ExecutionRequest request) {
-        UUID id = executionService.submitExecution(request);
+        UUID id = executionService.submitExecution(request.getCommand(), request.getCpuCount());
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 

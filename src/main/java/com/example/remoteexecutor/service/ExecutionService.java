@@ -6,7 +6,7 @@ import com.example.remoteexecutor.model.Execution;
 import java.util.UUID;
 
 public interface ExecutionService {
-    UUID submitExecution(ExecutionRequest executionRequest);
+    UUID submitExecution(String command, int cpuCount);
 
     Execution getExecution(UUID executionId);
 }

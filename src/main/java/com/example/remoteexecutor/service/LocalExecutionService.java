@@ -30,16 +30,13 @@ public class LocalExecutionService implements ExecutionService {
     }
 
     @Override
-    public UUID submitExecution(ExecutionRequest executionRequest){
-        if (executionRequest.getCpuCount() > cpuTotal) {
+    public UUID submitExecution(String command, int cpuCount){
+        if (cpuCount > cpuTotal) {
             throw new IllegalArgumentException("CPU_REQUEST_EXCEEDS_CAPACITY");
         }
 
         UUID executionId = UUID.randomUUID();
-        Execution execution = new Execution(
-                executionId,
-                executionRequest.getCommand(),
-                executionRequest.getCpuCount());
+        Execution execution = new Execution(executionId, command, cpuCount);
         executionQueue.add(execution);
         uuidExecutionMap.put(executionId, execution);
 

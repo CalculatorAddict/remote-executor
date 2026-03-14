@@ -21,37 +21,30 @@ class LocalExecutionServiceTest {
 
     @Test
     void submitExecution_validJob_appearsInMapAsQueued() {
-        ExecutionRequest request = new ExecutionRequest("sleep 5",1);
-        UUID requestId = localExecutionService.submitExecution(request);
+        UUID requestId = localExecutionService.submitExecution("sleep 5",1);
         Execution execution = localExecutionService.getExecution(requestId);
         assertEquals(ExecutionStatus.IN_PROGRESS, execution.getStatus());
     }
 
     @Test
     void submitExecution_cpuExceedsTotal_throwsException() {
-        ExecutionRequest request = new ExecutionRequest("ls",6);
         assertThrows(IllegalArgumentException.class, () -> {
-            localExecutionService.submitExecution(request);
+            localExecutionService.submitExecution("ls",6);
         });
     }
 
     @Test
     void submitExecution_blankCommand_throwsException() {
-        ExecutionRequest request = new ExecutionRequest("",1);
         assertThrows(IllegalArgumentException.class, () -> {
-            localExecutionService.submitExecution(request);
+            localExecutionService.submitExecution("",1);
         });
     }
 
     @Test
     void scheduleExecutions_smallJobsRunWhenLargeJobBlocks() throws InterruptedException {
-        ExecutionRequest request1 = new ExecutionRequest("sleep 5", 3);
-        ExecutionRequest request2 = new ExecutionRequest("ls", 2);
-        ExecutionRequest request3 = new ExecutionRequest("ls", 1);
-
-        localExecutionService.submitExecution(request1);
-        UUID id2 = localExecutionService.submitExecution(request2);
-        UUID id3 = localExecutionService.submitExecution(request3);
+        localExecutionService.submitExecution("sleep 5", 3);
+        UUID id2 = localExecutionService.submitExecution("ls", 2);
+        UUID id3 = localExecutionService.submitExecution("ls", 1);
         Thread.sleep(500);
         Execution execution2 = localExecutionService.getExecution(id2);
         Execution execution3 = localExecutionService.getExecution(id3);
@@ -61,8 +54,7 @@ class LocalExecutionServiceTest {
 
     @Test
     void submitExecution_jobFinishes_statusIsFinished() throws InterruptedException {
-        ExecutionRequest request = new ExecutionRequest("echo hello",1);
-        UUID id = localExecutionService.submitExecution(request);
+        UUID id = localExecutionService.submitExecution("echo hello",1);
         Thread.sleep(500);
         Execution execution = localExecutionService.getExecution(id);
         assertEquals(ExecutionStatus.FINISHED, execution.getStatus());
